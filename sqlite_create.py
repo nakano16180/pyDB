@@ -22,7 +22,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS users(
     verified_at DATETIME NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
-    )""")
+    );""")
 
 cur.execute("""CREATE TABLE IF NOT EXISTS posts(
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
@@ -32,7 +32,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS posts(
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
     FOREIGN KEY(author_id) REFERENCES users(id)
-    )""")
+    );""")
 
 # データベースへコミット。これで変更が反映される。
 conn.commit()
