@@ -9,6 +9,12 @@ conn = sqlite3.connect(dir_path+dbname)
 
 cursor = conn.cursor()
 
+def register_user(name, email, password):
+    pass
+
+def login_user(name, email, password):
+    pass
+
 sql = "INSERT INTO users(name, email, password) VALUES('AAA', 'aaa@example.com', 'aaaAAA');"
 cursor.execute(sql)
 cursor.execute("COMMIT;")
