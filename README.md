@@ -38,3 +38,10 @@ To read data
 ```
 $ python3 sqlite_read.py
 ```
+
+### 参考資料
+- https://crimnut.hateblo.jp/entry/2018/04/17/172709
+- http://memopy.hatenadiary.jp/entry/2017/03/05/231859
+- https://nekodeki.com/python%E3%81%A7sqlite3%E3%82%92%E4%BD%BF%E3%81%86/
+- https://note.nkmk.me/python-f-strings/
+- https://docs.python.org/ja/3/library/sqlite3.html#sqlite3.Row
