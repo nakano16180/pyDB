@@ -6,24 +6,31 @@ import pprint
 dir_path = 'database/'
 dbname = 'TEST.db'
 conn = sqlite3.connect(dir_path+dbname)
-
+conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
-def register_user(name, email, password):
-    pass
+def register_user(cursor, name, email, password):
+    sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
+    cursor.execute(sql)
+    cursor.execute("COMMIT;")
 
-def login_user(name, email, password):
-    pass
+def login_user(cursor, name, password):
+    sql = f"SELECT * FROM users WHERE name='{name}'"
+    for x in cursor.execute(sql):
+        print(x['password'] == password)
 
-sql = "INSERT INTO users(name, email, password) VALUES('AAA', 'aaa@example.com', 'aaaAAA');"
-cursor.execute(sql)
-cursor.execute("COMMIT;")
+#register_user(cursor, 'BBB', 'bbb@example.com', 'bbbBBB')
+#register_user(cursor, 'CCC', 'ccc@example.com', 'cccCCC')
+#register_user(cursor, 'DDD', 'ddd@example.com', 'dddDDD')
 
 sql = "select * from users"
 cursor.execute(sql)
 for x in cursor.fetchall():
-    pprint.pprint(x)
+    pprint.pprint(tuple(x))
     print("-----")
+
+login_user(cursor, 'AAA', 'aaa')
+login_user(cursor, 'AAA', 'aaaAAA')
 
 # データベースへのコネクションを閉じる。(必須)
 conn.close()
