@@ -9,9 +9,10 @@ conn = sqlite3.connect(dir_path+dbname)
 
 cursor = conn.cursor()
 
-sql = "DELETE FROM users WHERE name='AAA';"
-cursor.execute(sql)
-cursor.execute("COMMIT;")
+def deleteUserByName(cursor, name):
+    sql = "DELETE FROM users WHERE name='{name}';"
+    cursor.execute(sql)
+    cursor.execute("COMMIT;")
 
 sql = "select * from users"
 cursor.execute(sql)
