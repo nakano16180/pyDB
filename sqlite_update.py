@@ -1,5 +1,6 @@
 import sqlite3
 import pprint
+from tabulate import tabulate
 
 # TEST.dbを作成する
 # すでに存在していれば、それにアスセスする。
@@ -25,12 +26,17 @@ def login_user(cursor, name, password):
 
 sql = "select * from users"
 cursor.execute(sql)
-for x in cursor.fetchall():
-    pprint.pprint(tuple(x))
-    print("-----")
+result = cursor.fetchall()
+headers = list(dict(result[0]).keys())
 
-login_user(cursor, 'AAA', 'aaa')
-login_user(cursor, 'AAA', 'aaaAAA')
+table = []
+for x in result:
+    table.append(list(x))
+
+print(tabulate(table, headers, tablefmt="grid"))
+
+#login_user(cursor, 'AAA', 'aaa')
+#login_user(cursor, 'AAA', 'aaaAAA')
 
 # データベースへのコネクションを閉じる。(必須)
 conn.close()
