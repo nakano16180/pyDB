@@ -1,5 +1,7 @@
 import sqlite3
+import datetime
 import pprint
+from tabulate import tabulate
 
 # TEST.dbを作成する
 # すでに存在していれば、それにアスセスする。
@@ -14,23 +16,38 @@ def register_user(cursor, name, email, password):
     cursor.execute(sql)
     cursor.execute("COMMIT;")
 
+# nameとpasswordで認証
 def login_user(cursor, name, password):
     sql = f"SELECT * FROM users WHERE name='{name}'"
     for x in cursor.execute(sql):
-        print(x['password'] == password)
+        if x['password'] != password:
+            print("please check your name or password")
+        else:
+            print("login success!!")
+            print(tuple(x))
+            new_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            sql = f"UPDATE users SET verified_at='{new_date}' WHERE name='{name}'"
+            cursor.execute(sql)
+            cursor.execute("COMMIT;")
 
 #register_user(cursor, 'BBB', 'bbb@example.com', 'bbbBBB')
 #register_user(cursor, 'CCC', 'ccc@example.com', 'cccCCC')
 #register_user(cursor, 'DDD', 'ddd@example.com', 'dddDDD')
 
+#login_user(cursor, 'AAA', 'aaa')
+login_user(cursor, 'AAA', 'aaaAAA')
+
 sql = "select * from users"
 cursor.execute(sql)
-for x in cursor.fetchall():
-    pprint.pprint(tuple(x))
-    print("-----")
+result = cursor.fetchall()
+headers = list(dict(result[0]).keys())
 
-login_user(cursor, 'AAA', 'aaa')
-login_user(cursor, 'AAA', 'aaaAAA')
+table = []
+for x in result:
+    table.append(list(x))
+
+print(tabulate(table, headers, tablefmt="grid"))
+
 
 # データベースへのコネクションを閉じる。(必須)
 conn.close()
