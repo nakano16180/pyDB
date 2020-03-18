@@ -1,5 +1,6 @@
 import psycopg2
 import pprint
+from tabulate import tabulate
 
 path = "localhost"
 port = "5432"
@@ -14,18 +15,7 @@ conText = conText.format(path,port,dbname,user,password)
 connection = psycopg2.connect(conText)
 cur = connection.cursor()
 
-def test(cursor):
-    cursor.execute("DROP TABLE IF EXISTS test")
-    sql = "CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);"
-    cursor.execute(sql)
-
-    cursor.execute("INSERT INTO test (num, data) VALUES (%s, %s)", (100, "abc'def"))
-    cursor.execute("SELECT * FROM test;")
-
-    for row in cursor.fetchall():
-        print(row)
-
-def test2(cur):
+def create_tables(cur):
     cur.execute("""CREATE TABLE IF NOT EXISTS users(
         id serial NOT NULL PRIMARY KEY, 
         name VARCHAR NOT NULL, 
@@ -47,16 +37,7 @@ def test2(cur):
         FOREIGN KEY(author_id) REFERENCES users(id)
         );""")
 
-    cur.execute("SELECT * FROM users;")
-
-    for row in cur.fetchall():
-        print(row)
-
-    cur.execute("SELECT * FROM posts;")
-
-    for row in cur.fetchall():
-        print(row)
-
+## read
 def getAllTable(cursor):
     cursor.execute("SELECT relname as TABLE_NAME FROM pg_stat_user_tables;")
     for x in cursor.fetchall():
@@ -64,17 +45,40 @@ def getAllTable(cursor):
         print("-----")
 
 def getAllCollumByTableName(cursor, table_name):
-    print("------------------")
     sql = f"SELECT * FROM {table_name};"
     cursor.execute(sql)
-    for x in cursor.fetchall():
-        pprint.pprint(x)
-        print("-----")
+    colnames = [col.name for col in cursor.description]
+    print(colnames)
+    print("------------------")
 
+## update
+def register_user(cursor, name, email, password):
+    sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
+    cursor.execute(sql)
+    cursor.execute("COMMIT;")
 
-#test(cur)
-#test2(cur)
-getAllTable(cur)
+#create_tables(cur)
+
+#getAllTable(cur)
+#getAllCollumByTableName(cur, 'users')
+#getAllCollumByTableName(cur, 'posts')
+
+#register_user(cur, 'AAA', 'aaa@example.com', 'aaaAAA')
+#register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
+#register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
+#register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
+
+sql = "SELECT * FROM users"
+cur.execute(sql)
+result = cur.fetchall()
+headers = [col.name for col in cur.description]
+
+table = []
+for x in result:
+    table.append(list(x))
+
+print(tabulate(table, headers, tablefmt="grid"))
+
 
 # データベースへコミット。これで変更が反映される。
 connection.commit()
