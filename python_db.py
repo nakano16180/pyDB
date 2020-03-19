@@ -74,6 +74,18 @@ def login_user(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
+## delete
+def deleteUserByName(cursor, name, password):
+    sql = f"SELECT * FROM users WHERE name='{name}'"
+    cursor.execute(sql)
+    for x in cursor.fetchall():
+        if x['password'] != password:
+            print("please check your name or password")
+        else:
+            sql = f"DELETE FROM users WHERE name='{name}';"
+            cursor.execute(sql)
+            cursor.execute("COMMIT;")
+
 #create_tables(cur)
 
 #getAllTable(cur)
@@ -86,6 +98,8 @@ def login_user(cursor, name, password):
 #register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
 
 login_user(cur, 'AAA', 'aaaAAA')
+
+deleteUserByName(cur, 'DDD', 'dddDDD')
 
 sql = "SELECT * FROM users"
 cur.execute(sql)
