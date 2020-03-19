@@ -4,17 +4,16 @@ from tabulate import tabulate
 import datetime
 from psycopg2.extras import DictCursor
 
-path = "localhost"
-port = "5432"
-user = "postgres"
+username = "postgres"
 password = "postgres"
+
+hostname = "localhost"
+port = "5432"
 
 dbname = "pydb_practice"
 
-conText = "host={} port={} dbname={} user={} password={}"
-conText = conText.format(path,port,dbname,user,password)
-
-connection = psycopg2.connect(conText)
+db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
+connection = psycopg2.connect(db_url)
 cur = connection.cursor(cursor_factory=DictCursor)
 
 def create_tables(cur):
@@ -97,9 +96,9 @@ def deleteUserByName(cursor, name, password):
 #register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
 #register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
 
-login_user(cur, 'AAA', 'aaaAAA')
+#login_user(cur, 'AAA', 'aaaAAA')
 
-deleteUserByName(cur, 'DDD', 'dddDDD')
+#deleteUserByName(cur, 'DDD', 'dddDDD')
 
 sql = "SELECT * FROM users"
 cur.execute(sql)
