@@ -1,19 +1,20 @@
 import psycopg2
 import pprint
 from tabulate import tabulate
+import datetime
+from psycopg2.extras import DictCursor
 
-path = "localhost"
-port = "5432"
-user = "postgres"
+username = "postgres"
 password = "postgres"
+
+hostname = "localhost"
+port = "5432"
 
 dbname = "pydb_practice"
 
-conText = "host={} port={} dbname={} user={} password={}"
-conText = conText.format(path,port,dbname,user,password)
-
-connection = psycopg2.connect(conText)
-cur = connection.cursor()
+db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
+connection = psycopg2.connect(db_url)
+cur = connection.cursor(cursor_factory=DictCursor)
 
 def create_tables(cur):
     cur.execute("""CREATE TABLE IF NOT EXISTS users(
@@ -57,6 +58,33 @@ def register_user(cursor, name, email, password):
     cursor.execute(sql)
     cursor.execute("COMMIT;")
 
+# nameとpasswordで認証
+def login_user(cursor, name, password):
+    sql = f"SELECT * FROM users WHERE name='{name}'"
+    cursor.execute(sql)
+    for x in cursor.fetchall():
+        if x['password'] != password:
+            print("please check your name or password")
+        else:
+            print("login success!!")
+            print(tuple(x))
+            new_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            sql = f"UPDATE users SET verified_at='{new_date}' WHERE name='{name}'"
+            cursor.execute(sql)
+            cursor.execute("COMMIT;")
+
+## delete
+def deleteUserByName(cursor, name, password):
+    sql = f"SELECT * FROM users WHERE name='{name}'"
+    cursor.execute(sql)
+    for x in cursor.fetchall():
+        if x['password'] != password:
+            print("please check your name or password")
+        else:
+            sql = f"DELETE FROM users WHERE name='{name}';"
+            cursor.execute(sql)
+            cursor.execute("COMMIT;")
+
 #create_tables(cur)
 
 #getAllTable(cur)
@@ -67,6 +95,10 @@ def register_user(cursor, name, email, password):
 #register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
 #register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
 #register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
+
+#login_user(cur, 'AAA', 'aaaAAA')
+
+#deleteUserByName(cur, 'DDD', 'dddDDD')
 
 sql = "SELECT * FROM users"
 cur.execute(sql)
