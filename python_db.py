@@ -16,6 +16,18 @@ db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
 connection = psycopg2.connect(db_url)
 cur = connection.cursor(cursor_factory=DictCursor)
 
+def create_view(cur):
+    sql = "SELECT * FROM users"
+    cur.execute(sql)
+    result = cur.fetchall()
+    headers = [col.name for col in cur.description]
+
+    table = []
+    for x in result:
+        table.append(list(x))
+
+    print(tabulate(table, headers, tablefmt="grid"))
+
 def create_tables(cur):
     cur.execute("""CREATE TABLE IF NOT EXISTS users(
         id serial NOT NULL PRIMARY KEY, 
@@ -100,17 +112,7 @@ def deleteUserByName(cursor, name, password):
 
 #deleteUserByName(cur, 'DDD', 'dddDDD')
 
-sql = "SELECT * FROM users"
-cur.execute(sql)
-result = cur.fetchall()
-headers = [col.name for col in cur.description]
-
-table = []
-for x in result:
-    table.append(list(x))
-
-print(tabulate(table, headers, tablefmt="grid"))
-
+create_view(cur)
 
 # データベースへコミット。これで変更が反映される。
 connection.commit()
