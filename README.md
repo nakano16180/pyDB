@@ -39,14 +39,8 @@ $ pythton3 python_db.py
 
 ### Sqlite
 
-To create database
 ```
-$ python3 sqlite_create.py
-```
-
-To read data
-```
-$ python3 sqlite_read.py
+$ python3 sqlite_app.py
 ```
 
 ### 参考資料
