@@ -22,7 +22,6 @@ def create_view(cur):
 
     print(tabulate(table, headers, tablefmt="grid"))
 
-
 def create_tables(cursor):
     # 外部キー制約のオプションは、デフォルトでは無効になっているため、これを有効にする
     cursor.execute("PRAGMA foreign_keys = 1")
@@ -50,6 +49,7 @@ def create_tables(cursor):
         FOREIGN KEY(author_id) REFERENCES users(id)
         );""")
 
+## read
 def getAllTable(cursor):
     cursor.execute("SELECT * FROM sqlite_master WHERE type='table';")
     for x in cursor.fetchall():
@@ -57,13 +57,14 @@ def getAllTable(cursor):
         print("-----")
 
 def getAllCollumByTableName(cursor, table_name):
-    print("------------------")
     sql = f"SELECT * FROM {table_name};"
     cursor.execute(sql)
-    for x in cursor.fetchall():
-        pprint.pprint(tuple(x))
-        print("-----")
+    result = cursor.fetchall()
+    headers = list(dict(result[0]).keys())
+    print(headers)
+    print("------------------")
 
+## update
 def register_user(cursor, name, email, password):
     sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
     cursor.execute(sql)
@@ -83,11 +84,16 @@ def login_user(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
-def deleteUserByName(cursor, name):
-    sql = "DELETE FROM users WHERE name='{name}';"
+def deleteUserByName(cursor, name, password):
+    sql = f"SELECT * FROM users WHERE name='{name}'"
     cursor.execute(sql)
-    cursor.execute("COMMIT;")
-
+    for x in cursor.fetchall():
+        if x['password'] != password:
+            print("please check your name or password")
+        else:
+            sql = f"DELETE FROM users WHERE name='{name}';"
+            cursor.execute(sql)
+            cursor.execute("COMMIT;")
 
 getAllCollumByTableName(cur, 'users')
 getAllCollumByTableName(cur, 'posts')
