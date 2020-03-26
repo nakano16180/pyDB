@@ -3,8 +3,6 @@ import datetime
 import pprint
 from tabulate import tabulate
 
-# TEST.dbを作成する
-# すでに存在していれば、それにアスセスする。
 dir_path = 'database/'
 dbname = 'TEST.db'
 conn = sqlite3.connect(dir_path+dbname)
@@ -37,7 +35,7 @@ def login_user(cursor, name, password):
 #login_user(cursor, 'AAA', 'aaa')
 login_user(cursor, 'AAA', 'aaaAAA')
 
-sql = "select * from users"
+sql = "SELECT * FROM users"
 cursor.execute(sql)
 result = cursor.fetchall()
 headers = list(dict(result[0]).keys())
