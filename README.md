@@ -5,7 +5,6 @@
 ```
 $ cd py_db/
 $ pipenv install
-$ pipenv shell
 ```
 
 ### Postgresql
@@ -31,14 +30,15 @@ postgres=# \q
 #### run
 
 ```
-$ pythton3 python_db.py
+$ pipenv run pythton python_db.py
 ```
 
 
 ### Sqlite
 
 ```
-$ python3 sqlite_app.py
+$ mkdir database/
+$ pipenv run python sqlite_app.py
 ```
 
 ### 参考資料
