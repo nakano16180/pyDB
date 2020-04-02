@@ -95,12 +95,15 @@ def deleteUserByName(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
-getAllCollumByTableName(cur, 'users')
-getAllCollumByTableName(cur, 'posts')
+create_tables(cur)
+getAllTable(cur)
+#getAllCollumByTableName(cur, 'users')
+#getAllCollumByTableName(cur, 'posts')
 
-#register_user(cursor, 'BBB', 'bbb@example.com', 'bbbBBB')
-#register_user(cursor, 'CCC', 'ccc@example.com', 'cccCCC')
-#register_user(cursor, 'DDD', 'ddd@example.com', 'dddDDD')
+register_user(cur, 'AAA', 'aaa@example.com', 'aaaAAA')
+#register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
+#register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
+#register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
 
 login_user(cur, 'AAA', 'aaaAAA')
 

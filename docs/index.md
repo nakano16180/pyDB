@@ -10,5 +10,5 @@ $ pipenv install
 ### run
 
 ```
-$ pipenv run sqlite_app.py
+$ pipenv run python sqlite_app.py
 ```
