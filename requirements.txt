@@ -1,6 +1,4 @@
-pkg-resources==0.0.0
 psycopg2==2.8.4
 tabulate==0.8.6
-mkdocs
-mkdocs-material
-pygments
+nltk==3.4.5
+mkdocs-material==4.6.3
