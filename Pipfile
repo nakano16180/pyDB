@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 psycopg2 = "==2.8.4"
 tabulate = "==0.8.6"
+mkdocs = "*"
+mkdocs-material = "*"
+Pygments = "*"
 
 [requires]
 python_version = "3.6"
