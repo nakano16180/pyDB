@@ -1,8 +1,6 @@
 import sqlite3
 import pprint
 
-# TEST.dbを作成する
-# すでに存在していれば、それにアスセスする。
 dir_path = 'database/'
 dbname = 'TEST.db'
 conn = sqlite3.connect(dir_path+dbname)

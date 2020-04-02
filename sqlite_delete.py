@@ -1,8 +1,6 @@
 import sqlite3
 import pprint
 
-# TEST.dbを作成する
-# すでに存在していれば、それにアスセスする。
 dir_path = 'database/'
 dbname = 'TEST.db'
 conn = sqlite3.connect(dir_path+dbname)
@@ -14,7 +12,7 @@ def deleteUserByName(cursor, name):
     cursor.execute(sql)
     cursor.execute("COMMIT;")
 
-sql = "select * from users"
+sql = "SELECT * FROM users"
 cursor.execute(sql)
 for x in cursor.fetchall():
     pprint.pprint(x)
