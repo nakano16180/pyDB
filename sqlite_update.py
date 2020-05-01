@@ -1,13 +1,20 @@
 import sqlite3
 import datetime
+import os
 import pprint
 from tabulate import tabulate
 
-dir_path = 'database/'
-dbname = 'TEST.db'
-conn = sqlite3.connect(dir_path+dbname)
-conn.row_factory = sqlite3.Row
-cursor = conn.cursor()
+def view_user_table(cursor):
+    sql = "SELECT * FROM users"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    headers = list(dict(result[0]).keys())
+
+    table = []
+    for x in result:
+        table.append(list(x))
+
+    print(tabulate(table, headers, tablefmt="grid"))
 
 def register_user(cursor, name, email, password):
     sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
@@ -28,24 +35,25 @@ def login_user(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
-#register_user(cursor, 'BBB', 'bbb@example.com', 'bbbBBB')
-#register_user(cursor, 'CCC', 'ccc@example.com', 'cccCCC')
-#register_user(cursor, 'DDD', 'ddd@example.com', 'dddDDD')
+if __name__ == '__main__':
+    dir_path = 'database/'
+    os.makedirs(dir_path, exist_ok=True)
 
-#login_user(cursor, 'AAA', 'aaa')
-login_user(cursor, 'AAA', 'aaaAAA')
+    dbname = 'TEST.db'
+    conn = sqlite3.connect(dir_path+dbname)
+    conn.row_factory = sqlite3.Row
+    # sqliteを操作するカーソルオブジェクトを作成
+    cursor = conn.cursor()
+    
+    #register_user(cursor, 'AAA', 'aaa@example.com', 'aaaAAA')
+    #register_user(cursor, 'BBB', 'bbb@example.com', 'bbbBBB')
+    #register_user(cursor, 'CCC', 'ccc@example.com', 'cccCCC')
+    #register_user(cursor, 'DDD', 'ddd@example.com', 'dddDDD')
 
-sql = "SELECT * FROM users"
-cursor.execute(sql)
-result = cursor.fetchall()
-headers = list(dict(result[0]).keys())
+    #login_user(cursor, 'AAA', 'aaa')
+    login_user(cursor, 'AAA', 'aaaAAA')
+    
+    view_user_table(cursor)
 
-table = []
-for x in result:
-    table.append(list(x))
-
-print(tabulate(table, headers, tablefmt="grid"))
-
-
-# データベースへのコネクションを閉じる。(必須)
-conn.close()
+    # データベースへのコネクションを閉じる。(必須)
+    conn.close()

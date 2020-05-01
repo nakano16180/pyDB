@@ -1,11 +1,5 @@
 import sqlite3
-
-dir_path = 'database/'
-dbname = 'TEST.db'
-conn = sqlite3.connect(dir_path+dbname)
-
-# sqliteを操作するカーソルオブジェクトを作成
-cur = conn.cursor()
+import os
 
 def create_tables(cur):
     # 外部キー制約のオプションは、デフォルトでは無効になっているため、これを有効にする
@@ -34,8 +28,17 @@ def create_tables(cur):
         FOREIGN KEY(author_id) REFERENCES users(id)
         );""")
 
-create_tables(cur)
+if __name__ == '__main__':
+    dir_path = 'database/'
+    os.makedirs(dir_path, exist_ok=True)
 
-# データベースへコミット。これで変更が反映される。
-conn.commit()
-conn.close()
+    dbname = 'TEST.db'
+    conn = sqlite3.connect(dir_path+dbname)
+    # sqliteを操作するカーソルオブジェクトを作成
+    cur = conn.cursor()
+
+    create_tables(cur)
+
+    # データベースへコミット。これで変更が反映される。
+    conn.commit()
+    conn.close()
