@@ -1,6 +1,7 @@
 import sqlite3
 import pprint
 import os
+from tabulate import tabulate
 
 def getAllTable(cursor):
     cursor.execute("SELECT * FROM sqlite_master WHERE type='table';")
@@ -9,12 +10,18 @@ def getAllTable(cursor):
         print("-----")
 
 def getAllCollumByTableName(cursor, table_name):
-    print("------------------")
     sql = f"SELECT * FROM {table_name};"
     cursor.execute(sql)
-    for x in cursor.fetchall():
-        pprint.pprint(x)
-        print("-----")
+    result = cursor.fetchall()
+
+    if len(result) > 0:
+        headers = list(dict(result[0]).keys())
+
+        table = []
+        for x in result:
+            table.append(list(x))
+
+        print(tabulate(table, headers, tablefmt="grid"))
 
 if __name__ == '__main__':
     dir_path = 'database/'

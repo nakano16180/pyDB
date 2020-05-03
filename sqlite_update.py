@@ -8,13 +8,15 @@ def view_user_table(cursor):
     sql = "SELECT * FROM users"
     cursor.execute(sql)
     result = cursor.fetchall()
-    headers = list(dict(result[0]).keys())
 
-    table = []
-    for x in result:
-        table.append(list(x))
+    if len(result) > 0:
+        headers = list(dict(result[0]).keys())
 
-    print(tabulate(table, headers, tablefmt="grid"))
+        table = []
+        for x in result:
+            table.append(list(x))
+
+        print(tabulate(table, headers, tablefmt="grid"))
 
 def register_user(cursor, name, email, password):
     sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
