@@ -45,13 +45,15 @@ def todo_list(cursor):
     sql = "SELECT * FROM tasks"
     cursor.execute(sql)
     result = cursor.fetchall()
-    headers = list(dict(result[0]).keys())
+    
+    if len(result) > 0:
+        headers = list(dict(result[0]).keys())
 
-    table = []
-    for x in result:
-        table.append(list(x))
+        table = []
+        for x in result:
+            table.append(list(x))
 
-    print(tabulate(table, headers, tablefmt="grid"))
+        print(tabulate(table, headers, tablefmt="grid"))
 
 def view_user_table(cursor):
     sql = "SELECT * FROM users"
@@ -78,11 +80,9 @@ def login_user(cursor, name, password):
 def isChecked(cursor, name, password):
     result = login_user(cursor, name, password)
     if result:
-        print(tuple(result))
-        return True
+        return result
     else:
         print("please check your name or password")
-        return False
 
 def todo_add(cursor, user_id, task):
     sql = f"INSERT INTO tasks(task, created_by, state) VALUES('{task}', '{user_id}', 'Todo');"
@@ -125,8 +125,14 @@ if __name__ == '__main__':
     #delete_user(cursor, 'AAA', 'aaaAAA')
     #register_user(cursor, 'AAA', 'aaa@example.com', 'aaaAAA')
 
-    view_user_table(cursor)
-    isChecked(cursor, 'AAA', 'aaaAAA')
+    #view_user_table(cursor)
+
+    result = isChecked(cursor, 'AAA', 'aaaAAA')
+    if result:
+        id = result['id']
+        todo_add(cursor, id, 'make todo app')
+        todo_list(cursor)
+
 
     # データベースへコミット。これで変更が反映される。
     conn.commit()
