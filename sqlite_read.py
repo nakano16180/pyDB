@@ -29,6 +29,7 @@ if __name__ == '__main__':
 
     dbname = 'TEST.db'
     conn = sqlite3.connect(dir_path+dbname)
+    conn.row_factory = sqlite3.Row
     # sqliteを操作するカーソルオブジェクトを作成
     cursor = conn.cursor()
     
