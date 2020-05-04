@@ -1,4 +1,4 @@
-## py_db
+## pyDB
 
 ### Python setup
 
