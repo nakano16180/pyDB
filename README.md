@@ -3,12 +3,12 @@
 ### Python setup
 
 ```
-$ cd py_db/
+$ git clone https://github.com/nakano16180/pyDB.git
+$ cd pyDB/
 $ pipenv install
 ```
 
 ### Postgresql
-
 #### setup
 create database
 
