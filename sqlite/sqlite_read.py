@@ -1,6 +1,6 @@
 import sqlite3
-import pprint
 import os
+import pprint
 from tabulate import tabulate
 
 def getAllTable(cursor):
