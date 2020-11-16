@@ -42,8 +42,7 @@ $ pipenv run python sqlite_app.py
 ```
 
 ### 参考資料
-- https://crimnut.hateblo.jp/entry/2018/04/17/172709
-- http://memopy.hatenadiary.jp/entry/2017/03/05/231859
-- https://nekodeki.com/python%E3%81%A7sqlite3%E3%82%92%E4%BD%BF%E3%81%86/
-- https://note.nkmk.me/python-f-strings/
-- https://docs.python.org/ja/3/library/sqlite3.html#sqlite3.Row
+- [データベースの実装【python tkinter sqlite3で家計簿を作る】 - memopy](http://memopy.hatenadiary.jp/entry/2017/03/05/231859)
+- [pythonでsqlite3を使う - そんなこと猫でもできる](https://nekodeki.com/python%E3%81%A7sqlite3%E3%82%92%E4%BD%BF%E3%81%86/)
+- [Pythonのf文字列（フォーマット済み文字列リテラル）の使い方 | note.nkmk.me](https://note.nkmk.me/python-f-strings/)
+- [12.6. sqlite3 --- SQLite データベースに対する DB-API 2.0 インタフェース — Python 3.6.12 ドキュメント](https://docs.python.org/ja/3.6/library/sqlite3.html#sqlite3.Row)
