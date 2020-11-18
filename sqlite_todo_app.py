@@ -3,8 +3,11 @@ import os
 import datetime
 from tabulate import tabulate
 
+import pydb_utill
 
 ## create ################################################################
+
+
 def create_user_tables(cursor):
     # 外部キー制約のオプションは、デフォルトでは無効になっているため、これを有効にする
     cursor.execute("PRAGMA foreign_keys = 1")
@@ -18,6 +21,7 @@ def create_user_tables(cursor):
         password VARCHAR NOT NULL
         );""")
 
+
 def create_task_tables(cursor):
     cursor.execute("""CREATE TABLE IF NOT EXISTS tasks(
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
@@ -28,6 +32,7 @@ def create_task_tables(cursor):
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
         FOREIGN KEY(created_by) REFERENCES users(id)
         );""")
+
 
 def register_user(cursor, name, email, password):
     sql = f"SELECT * FROM users WHERE name='{name}'"
@@ -41,11 +46,13 @@ def register_user(cursor, name, email, password):
     cursor.execute("COMMIT;")
 
 ## read ##################################################################
+
+
 def todo_list(cursor):
     sql = "SELECT * FROM tasks"
     cursor.execute(sql)
     result = cursor.fetchall()
-    
+
     if len(result) > 0:
         headers = list(dict(result[0]).keys())
 
@@ -54,6 +61,7 @@ def todo_list(cursor):
             table.append(list(x))
 
         print(tabulate(table, headers, tablefmt="grid"))
+
 
 def view_user_table(cursor):
     sql = "SELECT * FROM users"
@@ -71,11 +79,14 @@ def view_user_table(cursor):
 
 ## update ################################################################
 # nameとpasswordで認証
+
+
 def login_user(cursor, name, password):
     sql = f"SELECT * FROM users WHERE name='{name}'"
     for x in cursor.execute(sql):
         if x['password'] == password:
             return x
+
 
 def isChecked(cursor, name, password):
     result = login_user(cursor, name, password)
@@ -84,16 +95,19 @@ def isChecked(cursor, name, password):
     else:
         print("please check your name or password")
 
+
 def todo_add(cursor, user_id, task):
     sql = f"INSERT INTO tasks(task, created_by, state) VALUES('{task}', '{user_id}', 'Todo');"
     cursor.execute(sql)
     cursor.execute("COMMIT;")
+
 
 def todo_doing(cursor, user, task_id):
     new_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     sql = f"UPDATE tasks SET state='Doing' updated_at='{new_date}' WHERE id='{task_id}'"
     cursor.execute(sql)
     cursor.execute("COMMIT;")
+
 
 def todo_done(cursor, user, task_id):
     new_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -102,37 +116,40 @@ def todo_done(cursor, user, task_id):
     cursor.execute("COMMIT;")
 
 ## delete #################################################################
+
+
 def delete_user(cursor, name, password):
     sql = f"DELETE FROM users WHERE name='{name}'"
     cursor.execute(sql)
     cursor.execute("COMMIT;")
 
+
 def todo_remove(cursor, user, task_id):
     pass
 
-if __name__ == '__main__':
-    dir_path = 'database/'
-    os.makedirs(dir_path, exist_ok=True)
 
-    dbname = 'Task.db'
-    conn = sqlite3.connect(dir_path+dbname)
+if __name__ == '__main__':
+    _, url = pydb_utill.load_db_config()
+
+    conn = sqlite3.connect(url)
     conn.row_factory = sqlite3.Row
+
     # sqliteを操作するカーソルオブジェクトを作成
     cursor = conn.cursor()
 
-    #create_user_tables(cursor)
-    #create_task_tables(cursor)
-    #delete_user(cursor, 'AAA', 'aaaAAA')
-    #register_user(cursor, 'AAA', 'aaa@example.com', 'aaaAAA')
+    # create_user_tables(cursor)
+    # create_task_tables(cursor)
 
-    #view_user_table(cursor)
+    # register_user(cursor, 'AAA', 'aaa@example.com', 'aaaAAA')
+    view_user_table(cursor)
+
+    #delete_user(cursor, 'AAA', 'aaaAAA')
 
     result = isChecked(cursor, 'AAA', 'aaaAAA')
     if result:
         id = result['id']
         todo_add(cursor, id, 'make todo app')
         todo_list(cursor)
-
 
     # データベースへコミット。これで変更が反映される。
     conn.commit()

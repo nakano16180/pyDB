@@ -3,12 +3,11 @@ import pprint
 import datetime
 from tabulate import tabulate
 
-dir_path = 'database/'
-dbname = 'TEST.db'
-conn = sqlite3.connect(dir_path+dbname)
-conn.row_factory = sqlite3.Row
-# sqliteを操作するカーソルオブジェクトを作成
-cur = conn.cursor()
+import pydb_utill
+from sqlite_crud import sqlite_create
+from sqlite_crud import sqlite_read
+from sqlite_crud import sqlite_update
+
 
 def create_view(cur):
     sql = "SELECT * FROM users"
@@ -22,67 +21,6 @@ def create_view(cur):
 
     print(tabulate(table, headers, tablefmt="grid"))
 
-def create_tables(cursor):
-    # 外部キー制約のオプションは、デフォルトでは無効になっているため、これを有効にする
-    cursor.execute("PRAGMA foreign_keys = 1")
-
-    # personsというtableを作成してみる
-    # 大文字部はSQL文。小文字でも問題ない。
-    cursor.execute("""CREATE TABLE IF NOT EXISTS users(
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-        name VARCHAR NOT NULL, 
-        email VARCHAR NOT NULL, 
-        password VARCHAR NOT NULL, 
-        remember_token VARCHAR NULL, 
-        verified_at DATETIME NULL, 
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
-        );""")
-
-    cursor.execute("""CREATE TABLE IF NOT EXISTS posts(
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-        title VARCHAR NOT NULL, 
-        author_id INTEGER NOT NULL, 
-        body VARCHAR NOT NULL, 
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
-        FOREIGN KEY(author_id) REFERENCES users(id)
-        );""")
-
-## read
-def getAllTable(cursor):
-    cursor.execute("SELECT * FROM sqlite_master WHERE type='table';")
-    for x in cursor.fetchall():
-        pprint.pprint(tuple(x))
-        print("-----")
-
-def getAllCollumByTableName(cursor, table_name):
-    sql = f"SELECT * FROM {table_name};"
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    headers = list(dict(result[0]).keys())
-    print(headers)
-    print("------------------")
-
-## update
-def register_user(cursor, name, email, password):
-    sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
-    cursor.execute(sql)
-    cursor.execute("COMMIT;")
-
-# nameとpasswordで認証
-def login_user(cursor, name, password):
-    sql = f"SELECT * FROM users WHERE name='{name}'"
-    for x in cursor.execute(sql):
-        if x['password'] != password:
-            print("please check your name or password")
-        else:
-            print("login success!!")
-            print(tuple(x))
-            new_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            sql = f"UPDATE users SET verified_at='{new_date}' WHERE name='{name}'"
-            cursor.execute(sql)
-            cursor.execute("COMMIT;")
 
 def deleteUserByName(cursor, name, password):
     sql = f"SELECT * FROM users WHERE name='{name}'"
@@ -95,19 +33,32 @@ def deleteUserByName(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
-create_tables(cur)
-getAllTable(cur)
-#getAllCollumByTableName(cur, 'users')
-#getAllCollumByTableName(cur, 'posts')
 
-register_user(cur, 'AAA', 'aaa@example.com', 'aaaAAA')
-#register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
-#register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
-#register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
+if __name__ == '__main__':
+    _, url = pydb_utill.load_db_config()
 
-login_user(cur, 'AAA', 'aaaAAA')
+    conn = sqlite3.connect(url)
+    conn.row_factory = sqlite3.Row
 
+    # sqliteを操作するカーソルオブジェクトを作成
+    cur = conn.cursor()
 
-# データベースへコミット。これで変更が反映される。
-conn.commit()
-conn.close()
+    # sqlite_create.create_tables(cur)
+    # sqlite_read.getAllTable(cur)
+    print('--display users table')
+    sqlite_read.getAllCollumByTableName(cur, 'users')
+    print('--display posts table')
+    sqlite_read.getAllCollumByTableName(cur, 'posts')
+
+    #sqlite_update.register_user(cur, 'AAA', 'aaa@example.com', 'aaaAAA')
+    #sqlite_update.register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
+    #sqlite_update.register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
+    #sqlite_update.register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
+
+    print('--display users table')
+    sqlite_update.view_user_table(cur)
+    sqlite_update.login_user(cur, 'AAA', 'aaaAAA')
+
+    # データベースへコミット。これで変更が反映される。
+    conn.commit()
+    conn.close()
