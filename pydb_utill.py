@@ -25,3 +25,8 @@ def load_db_config():
         db_url = f'{dbname}'
 
     return db_type, db_url
+
+
+if __name__ == '__main__':
+    db_type, url = load_db_config()
+    print(db_type, url)
