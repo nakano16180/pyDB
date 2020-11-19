@@ -23,24 +23,6 @@ def todo_list(cursor):
 
         print(tabulate(table, headers, tablefmt="grid"))
 
-## update ################################################################
-# nameとpasswordで認証
-
-
-def login_user(cursor, name, password):
-    sql = f"SELECT * FROM users WHERE name='{name}'"
-    for x in cursor.execute(sql):
-        if x['password'] == password:
-            return x
-
-
-def isChecked(cursor, name, password):
-    result = login_user(cursor, name, password)
-    if result:
-        return result
-    else:
-        print("please check your name or password")
-
 
 def todo_add(cursor, user_id, task):
     sql = f"INSERT INTO tasks(task, created_by, state) VALUES('{task}', '{user_id}', 'Todo');"
@@ -79,11 +61,11 @@ if __name__ == '__main__':
 
     # sqlite_todo.create_user_tables(cursor)
     # sqlite_todo.create_task_tables(cursor)
-    #sqlite_todo.register_user(cursor, 'AAA', 'aaa@example.com', 'aaaAAA')
+    # sqlite_todo.register_user(cursor, 'AAA', 'aaa@example.com', 'aaaAAA')
 
     sqlite_todo.view_user_table(cursor)
 
-#    result = isChecked(cursor, 'AAA', 'aaaAAA')
+#    result = sqlite_todo.isChecked(cursor, 'AAA', 'aaaAAA')
 #    if result:
 #        id = result['id']
 #        todo_add(cursor, id, 'make todo app')

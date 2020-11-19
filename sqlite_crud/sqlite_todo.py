@@ -54,6 +54,21 @@ def view_user_table(cursor):
         print(tabulate(table, headers, tablefmt="grid"))
 
 
+def login_user(cursor, name, password):
+    sql = f"SELECT * FROM users WHERE name='{name}'"
+    for x in cursor.execute(sql):
+        if x['password'] == password:
+            return x
+
+
+def isChecked(cursor, name, password):
+    result = login_user(cursor, name, password)
+    if result:
+        return result
+    else:
+        print("please check your name or password")
+
+
 def delete_user(cursor, name, password):
     sql = f"DELETE FROM users WHERE name='{name}'"
     cursor.execute(sql)
