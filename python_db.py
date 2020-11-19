@@ -5,20 +5,8 @@ from tabulate import tabulate
 import datetime
 from psycopg2.extras import DictCursor
 
-json_file = open('config.json', 'r')
-json_obj  = json.load(json_file)
+import pydb_utill
 
-username = json_obj["DB_USERNAME"]
-password = json_obj["DB_PASSWORD"]
-
-hostname = json_obj["DB_HOST"]
-port = json_obj["DB_PORT"]
-
-dbname = json_obj["DB_DATABASE"]
-
-db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
-connection = psycopg2.connect(db_url)
-cur = connection.cursor(cursor_factory=DictCursor)
 
 def create_view(cur):
     sql = "SELECT * FROM users"
@@ -31,6 +19,7 @@ def create_view(cur):
         table.append(list(x))
 
     print(tabulate(table, headers, tablefmt="grid"))
+
 
 def create_tables(cur):
     cur.execute("""CREATE TABLE IF NOT EXISTS users(
@@ -54,12 +43,15 @@ def create_tables(cur):
         FOREIGN KEY(author_id) REFERENCES users(id)
         );""")
 
-## read
+# read
+
+
 def getAllTable(cursor):
     cursor.execute("SELECT relname as TABLE_NAME FROM pg_stat_user_tables;")
     for x in cursor.fetchall():
         pprint.pprint(x)
         print("-----")
+
 
 def getAllCollumByTableName(cursor, table_name):
     sql = f"SELECT * FROM {table_name};"
@@ -68,13 +60,17 @@ def getAllCollumByTableName(cursor, table_name):
     print(colnames)
     print("------------------")
 
-## update
+# update
+
+
 def register_user(cursor, name, email, password):
     sql = f"INSERT INTO users(name, email, password) VALUES('{name}', '{email}', '{password}');"
     cursor.execute(sql)
     cursor.execute("COMMIT;")
 
 # nameとpasswordで認証
+
+
 def login_user(cursor, name, password):
     sql = f"SELECT * FROM users WHERE name='{name}'"
     cursor.execute(sql)
@@ -89,7 +85,9 @@ def login_user(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
-## delete
+# delete
+
+
 def deleteUserByName(cursor, name, password):
     sql = f"SELECT * FROM users WHERE name='{name}'"
     cursor.execute(sql)
@@ -101,25 +99,35 @@ def deleteUserByName(cursor, name, password):
             cursor.execute(sql)
             cursor.execute("COMMIT;")
 
-#create_tables(cur)
 
-#getAllTable(cur)
-#getAllCollumByTableName(cur, 'users')
-#getAllCollumByTableName(cur, 'posts')
+if __name__ == '__main__':
+    db_type, url = pydb_utill.load_db_config()
 
-#register_user(cur, 'AAA', 'aaa@example.com', 'aaaAAA')
-#register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
-#register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
-#register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
+    if not db_type == 'postgresql':
+        return
 
-#login_user(cur, 'AAA', 'aaaAAA')
+    connection = psycopg2.connect(url)
+    cur = connection.cursor(cursor_factory=DictCursor)
 
-#deleteUserByName(cur, 'DDD', 'dddDDD')
+    # create_tables(cur)
 
-create_view(cur)
+    # getAllTable(cur)
+    #getAllCollumByTableName(cur, 'users')
+    #getAllCollumByTableName(cur, 'posts')
 
-# データベースへコミット。これで変更が反映される。
-connection.commit()
+    #register_user(cur, 'AAA', 'aaa@example.com', 'aaaAAA')
+    #register_user(cur, 'BBB', 'bbb@example.com', 'bbbBBB')
+    #register_user(cur, 'CCC', 'ccc@example.com', 'cccCCC')
+    #register_user(cur, 'DDD', 'ddd@example.com', 'dddDDD')
 
-cur.close()
-connection.close()
+    #login_user(cur, 'AAA', 'aaaAAA')
+
+    #deleteUserByName(cur, 'DDD', 'dddDDD')
+
+    create_view(cur)
+
+    # データベースへコミット。これで変更が反映される。
+    connection.commit()
+
+    cur.close()
+    connection.close()
