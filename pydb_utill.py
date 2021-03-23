@@ -19,8 +19,8 @@ def load_db_config():
     db_type = json_obj["DB_CONNECTION"]
 
     db_url = ""
-    if db_type == "postgresql":
-        db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
+    if db_type == "postgres":
+        db_url = f'postgres://{username}:{password}@{hostname}:{port}/{dbname}'
     elif db_type == "sqlite":
         db_url = f'{dbname}'
 
