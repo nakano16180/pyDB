@@ -12,10 +12,27 @@ port = "5432"
 
 dbname = "pydb_practice"
 
-db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
+db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'#default connection destination
 connection = psycopg2.connect(db_url)
 cur = connection.cursor(cursor_factory=DictCursor)
 
+def commit_change(connection):connection.commit()
+def change_connection_destination(sync=True):]
+    global cur,connection,db_url
+    if sync:commit_change()
+    cur.close()
+    connection.close()
+    connection = psycopg2.connect(f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}')
+    cur = connection.cursor(cursor_factory=DictCursor)
+def reconnect(sync=True):
+    change_connection_destination(sync,db_url)
+def set_connection_details(key,value):
+    global username,password,hostname,port,dbname
+    if key=="username":username=value
+    elif key=="password":password=value
+    elif key=="hostname":hostname=value
+    elif key=="port":port=value
+    elif key=="dbname":dbname=value
 def create_view(cur):
     sql = "SELECT * FROM users"
     cur.execute(sql)
