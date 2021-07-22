@@ -3,3 +3,4 @@ log/
 database/
 venv/
 .venv/
+**.db
