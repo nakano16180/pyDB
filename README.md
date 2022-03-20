@@ -21,6 +21,7 @@ $ docker run --volumes-from psql_data --name psql -p 5432:5432 -e POSTGRES_PASSW
 $ docker exec -it psql bash
 # psql -h localhost -U postgres
 
+postgres=# \l
 postgres=# create database pydb_practice;
 postgres=# \q
 
