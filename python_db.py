@@ -10,7 +10,7 @@ password = "postgres"
 hostname = "localhost"
 port = "5432"
 
-dbname = "pydb_practice"
+dbname = "hello_world"
 
 db_url = f'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'
 connection = psycopg2.connect(db_url)
